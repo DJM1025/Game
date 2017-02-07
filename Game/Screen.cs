@@ -50,7 +50,13 @@ namespace Game
             _gamePanel.Paint += _gamePanel_Paint;
             while (_isRunning)
             {
-                _gamePanel.Invalidate();
+                try
+                {
+                    _gamePanel.Invalidate();
+                }
+                catch
+                {
+                }
             }
         }
 
@@ -121,7 +127,12 @@ namespace Game
                         {
                             if (this.Tag != null && this.Tag.GetType() == typeof(Animation))
                             {
-                                tile.Animation = (Animation)this.Tag;
+                                Animation temp = (Animation)this.Tag;
+                                tile.Animation.Images = temp.Images;
+                                //tile.Animation.Timer = temp.Timer;
+                                tile.Animation.DefaultImage = temp.DefaultImage;
+                                tile.Animating = temp.Animating;
+                                tile.Animation.AnimationDelayMs = temp.AnimationDelayMs;
                             }
                             //tile.Animating = !tile.Animating;
                         }

@@ -6,3 +6,12 @@ C:\Users\Dan\Desktop\Game\Game\obj\x86\Debug\Game.exe
 C:\Users\Dan\Desktop\Game\Game\obj\x86\Debug\Game.pdb
 C:\Users\Dan\Desktop\Game\Game\obj\x86\Debug\Game.Screen.resources
 C:\Users\Dan\Desktop\Game\Game\obj\x86\Debug\Game.AnimationMaker.resources
+C:\Users\DJMar_000\Desktop\Game\Game\Game\obj\x86\Debug\Game.exe
+C:\Users\DJMar_000\Desktop\Game\Game\Game\obj\x86\Debug\Game.pdb
+C:\Users\DJMar_000\Desktop\Game\Game\Game\bin\Debug\Game.exe
+C:\Users\DJMar_000\Desktop\Game\Game\Game\bin\Debug\Game.pdb
+C:\Users\DJMar_000\Desktop\Game\Game\Game\obj\x86\Debug\Game.csprojResolveAssemblyReference.cache
+C:\Users\DJMar_000\Desktop\Game\Game\Game\obj\x86\Debug\Game.AnimationMaker.resources
+C:\Users\DJMar_000\Desktop\Game\Game\Game\obj\x86\Debug\Game.Screen.resources
+C:\Users\DJMar_000\Desktop\Game\Game\Game\obj\x86\Debug\Game.Properties.Resources.resources
+C:\Users\DJMar_000\Desktop\Game\Game\Game\obj\x86\Debug\Game.csproj.GenerateResource.Cache

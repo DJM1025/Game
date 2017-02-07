@@ -254,6 +254,198 @@
   <ItemGroup>
     <None Include="Resources\water5.png" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\house13.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\house00.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\house01.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\house02.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\house03.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\house04.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\house05.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\house06.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\house07.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\house10.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\house11.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\house12.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\house14.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\house15.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\house16.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\house17.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\house20.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\house21.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\house22.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\house23.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\house24.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\house25.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\house26.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\house27.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\house30.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\house31.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\house32.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\house33.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\house34.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\house35.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\house36.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\house37.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\house63.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\house40.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\house41.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\house42.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\house43.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\house44.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\house45.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\house46.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\house47.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\house50.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\house51.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\house52.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\house53.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\house54.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\house55.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\house56.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\house57.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\house60.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\house61.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\house62.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\house77.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\house64.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\house65.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\house66.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\house67.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\house70.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\house71.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\house72.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\house73.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\house74.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\house75.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\house76.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

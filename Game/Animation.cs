@@ -124,7 +124,14 @@ namespace Game
             set
             {
                 _animationDelayMs = value;
-                _timer.Change(0, _animationDelayMs);
+                if (_timer != null)
+                {
+                    _timer.Change(0, _animationDelayMs);
+                }
+                else
+                {
+                    _timer = new System.Threading.Timer(new System.Threading.TimerCallback(updateImage), null, 0, _animationDelayMs);
+                }
             }
         }
 
