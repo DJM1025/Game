@@ -7,16 +7,16 @@ using System.Drawing;
 namespace Game
 {
     [Serializable]
-    class MapTile : AnimatableObject
+    public class MapTile : InteractableObject
     {
-        public MapTile(Point location, Int32 tileSize,  Bitmap image)
+        public MapTile(Point location, Int32 tileSize,  Bitmap image) : base()
         {
             Location = location;
             Image = image;
             TileSize = tileSize;
         }
 
-        public MapTile()
+        public MapTile() : base()
         {
             Location = new Point(0, 0);
         }

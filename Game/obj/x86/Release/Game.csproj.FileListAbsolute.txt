@@ -1,0 +1,11 @@
+C:\Users\Dan\Desktop\GameGit\Game\Game\bin\Release\Game.exe.config
+C:\Users\Dan\Desktop\GameGit\Game\Game\bin\Release\Game.exe
+C:\Users\Dan\Desktop\GameGit\Game\Game\bin\Release\Game.pdb
+C:\Users\Dan\Desktop\GameGit\Game\Game\bin\Release\Microsoft.DirectX.AudioVideoPlayback.DLL
+C:\Users\Dan\Desktop\GameGit\Game\Game\bin\Release\Microsoft.DirectX.Direct3D.dll
+C:\Users\Dan\Desktop\GameGit\Game\Game\bin\Release\Microsoft.DirectX.dll
+C:\Users\Dan\Desktop\GameGit\Game\Game\obj\x86\Release\Game.Screen.resources
+C:\Users\Dan\Desktop\GameGit\Game\Game\obj\x86\Release\Game.Properties.Resources.resources
+C:\Users\Dan\Desktop\GameGit\Game\Game\obj\x86\Release\Game.csproj.GenerateResource.Cache
+C:\Users\Dan\Desktop\GameGit\Game\Game\obj\x86\Release\Game.exe
+C:\Users\Dan\Desktop\GameGit\Game\Game\obj\x86\Release\Game.pdb

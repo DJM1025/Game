@@ -7,7 +7,7 @@ using System.Drawing;
 namespace Game
 {
     [Serializable]
-    class AnimatableObject : CollidableObject
+    public class AnimatableObject : CollidableObject
     {
         public AnimatableObject(Animation animation)
         {

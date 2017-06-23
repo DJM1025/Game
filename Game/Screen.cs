@@ -7,6 +7,8 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using System.Threading;
+using Game.Scripting;
+using System.IO;
 
 namespace Game
 {
@@ -22,10 +24,12 @@ namespace Game
             loadMap();
             loadPlayer();
             loadSideBar();
+            ScriptDataBridge.GetInstance().Map = this.map;
+            ScriptDataBridge.GetInstance().Player = this.player;
             System.Threading.TimerCallback tc = new TimerCallback(setFps);
             t = new System.Threading.Timer(tc, null, 1000, 1000);
             _gamePanel.Paint += titleScreenPaint;
-            _gamePanel.Invalidate();   
+            _gamePanel.Invalidate();
         }
 
         private void titleScreenPaint(object sender, PaintEventArgs e)
@@ -72,26 +76,22 @@ namespace Game
 
         private void loadMap()
         {
-            map = new Map("MyFile.bin");
-            //map = new Map(_mapSize, _tileSize);
+            //map = new Map("MyFile.bin");
+            map = new Map(_mapSize, _tileSize);
         }
 
         private void loadPlayer()
         {
             Point start = new Point((_gamePanel.Width / 2) - 16, (_gamePanel.Height / 2) - 16);
             player = new Player(start, map.GetMiddleTile());
-            centerMapOnPlayer(1000);
-        }
-
-        private void centerMapOnPlayer(Int32 speed)
-        {
-            map.Move(player.Location.X - player.CurrentTile.Location.X, player.Location.Y - player.CurrentTile.Location.Y, speed);
+            map.CenterOnPlayer(1000, player);
         }
 
         private void _gamePanel_MouseClick(object sender, MouseEventArgs e)
         {
             if(isDevMode)
             {
+                map.ShowCollisions = isDevMode;
                 if (e.Button == System.Windows.Forms.MouseButtons.Right)
                 {
                     System.Windows.Forms.ListBox tempBox = new System.Windows.Forms.ListBox();
@@ -116,12 +116,16 @@ namespace Game
                         }
                         if (clicked.SelectedItem == "Animate")
                         {
-                            AnimationMaker maker = new AnimationMaker(_tileSize);
-                            maker.ShowDialog();
-                            tile.Animation = maker.Animation;
+                            OpenFileDialog dialog = new OpenFileDialog();
+                            dialog.ShowDialog();
+                            Animation a = new Animation();
+                            if (File.Exists(dialog.FileName))
+                            {
+                                a.Load(dialog.FileName);
+                            }
+                            tile.Animation = a;
                             tile.Animating = !tile.Animating;
-                            maker.Dispose();
-                            this.Tag = maker.Animation;
+                            this.Tag = a;
                         }
                         if (clicked.SelectedItem == "Last Animation")
                         {
@@ -164,66 +168,21 @@ namespace Game
                     return;
                 }
             }
-            if (e.Button == System.Windows.Forms.MouseButtons.Left)
+            MapTile clickedTile = map.GetClickedTile(e.X, e.Y);
+            ScriptDataBridge.GetInstance().ActionObject = clickedTile;
+            if (e.Button == System.Windows.Forms.MouseButtons.Right)
             {
-                if (player.Animating)
+                if (!isDevMode)
                 {
-                    player.Animating = false;
+                    clickedTile.Interact(this.player, this._gamePanel, e.X, e.Y);
                 }
-                List<Int32> path = map.GetPath(player.CurrentTile, map.GetClickedTile(e.X, e.Y));
-                moveThread = new Thread(() => doMovement(e.X, e.Y, path));
-                moveThread.Start();
+            }
+            else
+            {
+                clickedTile.DefaultInteract();
             }
         }
 
-        private void doMovement(Int32 x, Int32 y, List<Int32> path)
-        {
-            MapTile clickedTile = map.GetClickedTile(x,y);
-            for (int i = 0; i < path.Count; i++)
-            {
-                if (player.CurrentTile.MapRow == clickedTile.MapRow && player.CurrentTile.MapCol == clickedTile.MapCol)
-                {
-                    centerMapOnPlayer(speed);
-                    return;
-                }
-                if (path[i] == 1)
-                {
-                    player.CurrentTile = map.Tiles[player.CurrentTile.MapRow - 1][player.CurrentTile.MapCol];
-                    player.StartWalking(Player.WalkingDirection.Up);
-                }
-                if (path[i] == 2)
-                {
-                    player.CurrentTile = map.Tiles[player.CurrentTile.MapRow][player.CurrentTile.MapCol + 1];
-                    player.StartWalking(Player.WalkingDirection.Right);
-                }
-                if (path[i] == 3)
-                {
-                    player.CurrentTile = map.Tiles[player.CurrentTile.MapRow + 1][player.CurrentTile.MapCol];
-                    player.StartWalking(Player.WalkingDirection.Down);
-                }
-                if (path[i] == 4)
-                {
-                    player.CurrentTile = map.Tiles[player.CurrentTile.MapRow][player.CurrentTile.MapCol - 1];
-                    player.StartWalking(Player.WalkingDirection.Left);
-                }
-                if (!player.Animating)
-                {
-                    return;
-                }
-                centerMapOnPlayer(speed);
-                while (player.Location != player.CurrentTile.Location && player.Animating) 
-                { 
-                    if(Math.Abs(player.Location.X - player.CurrentTile.Location.X) <= speed)
-                    {
-                        if (Math.Abs(player.Location.Y - player.CurrentTile.Location.Y) <= speed)
-                        {
-                            break;
-                        }
-                    }
-                };
-                player.StopWalking();
-            }
-        }
 
         protected override bool ProcessDialogKey(Keys keyData)
         {
@@ -249,6 +208,8 @@ namespace Game
             sideBarHandler.Dispose();
             _sideBar.Dispose();
             this.Dispose();
+            Sound.SoundHandler.UnloadAllSounds();
+            //Sound.SoundActionConsumer.IsRunning = false;
             if (isDevMode)
             {
                 map.Save();
@@ -257,11 +218,10 @@ namespace Game
 
         private bool _isRunning = true;
         private Thread _renderThread = null;
-        private Thread moveThread = null;
         private Int32 _mapSize = 100;
-        private Int32 _tileSize = 64;
+        public static Int32 _tileSize = 64;
         private Int32 speed = 6;
-        private Boolean isDevMode = true;
+        private Boolean isDevMode = false;
 
         private Map map;
         private Player player;

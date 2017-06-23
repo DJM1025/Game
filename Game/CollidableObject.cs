@@ -6,7 +6,7 @@ using System.Text;
 namespace Game
 {
     [Serializable]
-    class CollidableObject : DrawableObject
+    public class CollidableObject : DrawableObject
     {
         public Boolean Collide
         {

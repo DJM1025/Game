@@ -7,7 +7,7 @@ using System.Drawing;
 namespace Game
 {
     [Serializable]
-    abstract class DrawableObject
+    public abstract class DrawableObject
     {
         public Point Location
         {

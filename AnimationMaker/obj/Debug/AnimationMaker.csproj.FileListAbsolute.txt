@@ -1,0 +1,14 @@
+C:\Users\Dan\Desktop\GameGit\Game\AnimationMaker\obj\Debug\AnimationMaker.AnimationMaker.resources
+C:\Users\Dan\Desktop\GameGit\Game\AnimationMaker\obj\Debug\AnimationMaker.Properties.Resources.resources
+C:\Users\Dan\Desktop\GameGit\Game\AnimationMaker\obj\Debug\AnimationMaker.csproj.GenerateResource.Cache
+C:\Users\Dan\Desktop\GameGit\Game\AnimationMaker\bin\Debug\AnimationMaker.exe.config
+C:\Users\Dan\Desktop\GameGit\Game\AnimationMaker\bin\Debug\AnimationMaker.exe
+C:\Users\Dan\Desktop\GameGit\Game\AnimationMaker\bin\Debug\AnimationMaker.pdb
+C:\Users\Dan\Desktop\GameGit\Game\AnimationMaker\bin\Debug\Game.exe
+C:\Users\Dan\Desktop\GameGit\Game\AnimationMaker\bin\Debug\Game.pdb
+C:\Users\Dan\Desktop\GameGit\Game\AnimationMaker\obj\Debug\AnimationMaker.csprojResolveAssemblyReference.cache
+C:\Users\Dan\Desktop\GameGit\Game\AnimationMaker\obj\Debug\AnimationMaker.exe
+C:\Users\Dan\Desktop\GameGit\Game\AnimationMaker\obj\Debug\AnimationMaker.pdb
+C:\Users\Dan\Desktop\GameGit\Game\AnimationMaker\bin\Debug\Microsoft.DirectX.AudioVideoPlayback.dll
+C:\Users\Dan\Desktop\GameGit\Game\AnimationMaker\bin\Debug\Microsoft.DirectX.Direct3D.dll
+C:\Users\Dan\Desktop\GameGit\Game\AnimationMaker\bin\Debug\Microsoft.DirectX.dll

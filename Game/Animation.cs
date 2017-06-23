@@ -15,6 +15,16 @@ namespace Game
             _timer = new System.Threading.Timer(new System.Threading.TimerCallback(updateImage), null, 0, _animationDelayMs);
         }
 
+        public Animation(Animation other)
+        {
+            _currentIndex = other._currentIndex;
+            _defaultImage = other._defaultImage;
+            _images = other.Images;
+            _animating = other.Animating;
+            _animationDelayMs = other.AnimationDelayMs;
+            _timer = new System.Threading.Timer(new System.Threading.TimerCallback(updateImage), null, 0, other.AnimationDelayMs);
+        }
+
         [System.Runtime.Serialization.OnDeserializedAttribute()]
         private void RunThisMethod(System.Runtime.Serialization.StreamingContext context)
         {
@@ -140,6 +150,7 @@ namespace Game
         private List<Bitmap> _images = new List<Bitmap>();
         private Bitmap _defaultImage = Properties.Resources.grass;
         private Int32 _animationDelayMs = 0;
+        private Int32 _runTime = 0;
         [NonSerialized]
         private System.Threading.Timer _timer;
     }

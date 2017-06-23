@@ -7,3 +7,11 @@ C:\Users\DJMar_000\Desktop\Game\Game\ImageSlicer\obj\Debug\ImageSlicer.Propertie
 C:\Users\DJMar_000\Desktop\Game\Game\ImageSlicer\obj\Debug\ImageSlicer.csproj.GenerateResource.Cache
 C:\Users\DJMar_000\Desktop\Game\Game\ImageSlicer\obj\Debug\ImageSlicer.exe
 C:\Users\DJMar_000\Desktop\Game\Game\ImageSlicer\obj\Debug\ImageSlicer.pdb
+C:\Users\Dan\Desktop\GameGit\Game\ImageSlicer\bin\Debug\ImageSlicer.exe.config
+C:\Users\Dan\Desktop\GameGit\Game\ImageSlicer\bin\Debug\ImageSlicer.exe
+C:\Users\Dan\Desktop\GameGit\Game\ImageSlicer\bin\Debug\ImageSlicer.pdb
+C:\Users\Dan\Desktop\GameGit\Game\ImageSlicer\obj\Debug\ImageSlicer.Form1.resources
+C:\Users\Dan\Desktop\GameGit\Game\ImageSlicer\obj\Debug\ImageSlicer.Properties.Resources.resources
+C:\Users\Dan\Desktop\GameGit\Game\ImageSlicer\obj\Debug\ImageSlicer.csproj.GenerateResource.Cache
+C:\Users\Dan\Desktop\GameGit\Game\ImageSlicer\obj\Debug\ImageSlicer.exe
+C:\Users\Dan\Desktop\GameGit\Game\ImageSlicer\obj\Debug\ImageSlicer.pdb

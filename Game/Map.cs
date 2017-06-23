@@ -7,7 +7,7 @@ using System.Drawing;
 namespace Game
 {
     [Serializable]
-    class Map : DrawableObject
+    public class Map : DrawableObject
     {
         public Map(Int32 mapSize, Int32 TileSize)
         {
@@ -20,27 +20,6 @@ namespace Game
                 for (int j = 0; j < MapSize; j++)
                 {
                     MapTile t = new MapTile();
-                    /*
-                    if (r.Next(3) == 1 && (i != 50 && j != 50))
-                    {
-                        t.Image = Properties.Resources.tree;
-                        t.Collide = true;
-                    }
-                    else if (r.Next(15) == 1 && (i != 50 && j != 50))
-                    {
-                        t.Image = Properties.Resources.water;
-                        t.Collide = true;
-                    }
-                    else if (r.Next(5) == 1 && (i != 50 && j != 50))
-                    {
-                        t.Image = Properties.Resources.stone;
-                    }
-                    else
-                    {
-                        t.Image = Properties.Resources.grass;
-                    }
-                    */
-                    //t.Image = Properties.Resources.grass;
                     t.Location = new Point(j * TileSize, i * TileSize);
                     t.TileSize = TileSize;
                     t.MapCol = j;
@@ -125,6 +104,11 @@ namespace Game
             this.speed = speed;
             shiftTiles();
             drawMutex.ReleaseMutex();
+        }
+
+        public void CenterOnPlayer(Int32 speed, Player player)
+        {
+            Move(player.Location.X - player.CurrentTile.Location.X, player.Location.Y - player.CurrentTile.Location.Y, speed);
         }
 
         public List<Int32> GetPath(MapTile fromTile, MapTile toTile)
