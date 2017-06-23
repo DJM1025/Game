@@ -5,6 +5,7 @@ using System.Text;
 
 namespace Game.Scripting
 {
+    [Serializable]
     public class ScriptDataBridge
     {
 
@@ -56,8 +57,9 @@ namespace Game.Scripting
                 _actionObject = value;
             }
         }
-
+        [NonSerialized]
         private InteractableObject _actionObject;
+        [NonSerialized]
         private Player _player;
         private Map _map;
         [NonSerialized]

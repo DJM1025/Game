@@ -40,31 +40,31 @@ namespace Game.Sound
             {
                 volume = 1000;
             }
-            SoundActionConsumer.QueueSoundAction(string.Format("setaudio {0} volume to " + volume.ToString(), alias));
+            //SoundActionConsumer.QueueSoundAction(string.Format("setaudio {0} volume to " + volume.ToString(), alias));
         }
 
         public static void PlaySound(String fileName, String alias)
         {
-            SoundActionConsumer.QueueSoundAction(string.Format(@"open ""{0}"" type mpegvideo alias " + alias, fileName));
-            SoundActionConsumer.QueueSoundAction(@"play " + alias);
+            //SoundActionConsumer.QueueSoundAction(string.Format(@"open ""{0}"" type mpegvideo alias " + alias, fileName));
+            //SoundActionConsumer.QueueSoundAction(@"play " + alias);
         }
 
         public static void RestartSound(String alias)
         {
-            SoundActionConsumer.QueueSoundAction(string.Format("seek {0} to start ", alias));
-            SoundActionConsumer.QueueSoundAction(@"play " + alias);
+           // SoundActionConsumer.QueueSoundAction(string.Format("seek {0} to start ", alias));
+           // SoundActionConsumer.QueueSoundAction(@"play " + alias);
         }
 
         public static void StopSound(String alias)
         {
-            SoundActionConsumer.QueueSoundAction(@"stop " + alias);
-            SoundActionConsumer.QueueSoundAction(string.Format("seek {0} to start ", alias));
+            //SoundActionConsumer.QueueSoundAction(@"stop " + alias);
+            //SoundActionConsumer.QueueSoundAction(string.Format("seek {0} to start ", alias));
         }
 
         public static void CloseSound(String alias)
         {
-            SoundActionConsumer.QueueSoundAction(@"stop " + alias);
-            SoundActionConsumer.QueueSoundAction("close " + alias);
+           // SoundActionConsumer.QueueSoundAction(@"stop " + alias);
+           // SoundActionConsumer.QueueSoundAction("close " + alias);
         }
 
         public static void RunAction(String action)

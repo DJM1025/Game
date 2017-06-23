@@ -77,7 +77,6 @@
     <Compile Include="Scripting\TestScript.cs" />
     <Compile Include="SideBarHandler.cs" />
     <Compile Include="Removed\TimedAnimation.cs" />
-    <Compile Include="Sound\SoundActionConsumer.cs" />
     <Compile Include="Sound\SoundHandler.cs" />
     <Compile Include="Sound\SoundHelper.cs" />
     <Compile Include="Sound\SoundInfo.cs" />

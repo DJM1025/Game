@@ -76,8 +76,8 @@ namespace Game
 
         private void loadMap()
         {
-            //map = new Map("MyFile.bin");
-            map = new Map(_mapSize, _tileSize);
+            map = new Map("MyFile.bin");
+            //map = new Map(_mapSize, _tileSize);
         }
 
         private void loadPlayer()
@@ -221,7 +221,7 @@ namespace Game
         private Int32 _mapSize = 100;
         public static Int32 _tileSize = 64;
         private Int32 speed = 6;
-        private Boolean isDevMode = false;
+        private Boolean isDevMode = true;
 
         private Map map;
         private Player player;

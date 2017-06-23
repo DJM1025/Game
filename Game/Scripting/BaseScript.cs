@@ -75,7 +75,10 @@ namespace Game.Scripting
 
         public void StopPlayingSound()
         {
-            SoundHandler.StopPlayingSound(_soundId);
+            if (_soundId > 0)
+            {
+                SoundHandler.StopPlayingSound(_soundId);
+            }
         }
 
         public void ForceMovePlayer(Int32 tilesDown, Int32 tilesRight)
