@@ -221,7 +221,7 @@ namespace Game
         private Int32 _mapSize = 100;
         public static Int32 _tileSize = 64;
         private Int32 speed = 6;
-        private Boolean isDevMode = true;
+        private Boolean isDevMode = false;
 
         private Map map;
         private Player player;

@@ -11,7 +11,6 @@ C:\Users\DJMar_000\Desktop\Game\Game\Game\obj\x86\Debug\Game.pdb
 C:\Users\DJMar_000\Desktop\Game\Game\Game\bin\Debug\Game.exe
 C:\Users\DJMar_000\Desktop\Game\Game\Game\bin\Debug\Game.pdb
 C:\Users\DJMar_000\Desktop\Game\Game\Game\obj\x86\Debug\Game.csprojResolveAssemblyReference.cache
-C:\Users\DJMar_000\Desktop\Game\Game\Game\obj\x86\Debug\Game.AnimationMaker.resources
 C:\Users\DJMar_000\Desktop\Game\Game\Game\obj\x86\Debug\Game.Screen.resources
 C:\Users\DJMar_000\Desktop\Game\Game\Game\obj\x86\Debug\Game.Properties.Resources.resources
 C:\Users\DJMar_000\Desktop\Game\Game\Game\obj\x86\Debug\Game.csproj.GenerateResource.Cache
@@ -27,3 +26,4 @@ C:\Users\Dan\Desktop\GameGit\Game\Game\bin\Debug\Microsoft.DirectX.AudioVideoPla
 C:\Users\Dan\Desktop\GameGit\Game\Game\bin\Debug\Microsoft.DirectX.Direct3D.dll
 C:\Users\Dan\Desktop\GameGit\Game\Game\bin\Debug\Microsoft.DirectX.dll
 C:\Users\Dan\Desktop\GameGit\Game\Game\bin\Debug\Game.exe.config
+C:\Users\DJMar_000\Desktop\Game\Game\Game\bin\Debug\Game.exe.config

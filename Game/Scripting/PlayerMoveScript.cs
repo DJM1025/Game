@@ -13,17 +13,21 @@ namespace Game.Scripting
             this.Name = "Walk Here";
             this.IsInterruptable = true;
             this.PlayerTriggerable = true;
-            LoadSound(@"C:\Users\Dan\Desktop\GameGit\Game\Game\Sounds\walking.mp3");
+            LoadSound(soundPath + "walking.mp3");
         }
 
         public override void ScriptLogic()
         {
+            if (_soundId == 0)
+            {
+                LoadSound(soundPath + "walking.mp3");
+            }
             if (_walkDownAnimation == null)
             {
-                _walkDownAnimation = LoadAnimation(@"C:\Users\Dan\Desktop\GameGit\Game\Game\Animations\playerFront.bin");
-                _walkUpAnimation = LoadAnimation(@"C:\Users\Dan\Desktop\GameGit\Game\Game\Animations\playerBack.bin");
-                _walkLeftAnimation = LoadAnimation(@"C:\Users\Dan\Desktop\GameGit\Game\Game\Animations\playerLeft.bin");
-                _walkRightAnimation = LoadAnimation(@"C:\Users\Dan\Desktop\GameGit\Game\Game\Animations\playerRight.bin");
+                _walkDownAnimation = LoadAnimation(animPath + "playerFront.bin");
+                _walkUpAnimation = LoadAnimation(animPath + "playerBack.bin");
+                _walkLeftAnimation = LoadAnimation(animPath + "playerLeft.bin");
+                _walkRightAnimation = LoadAnimation(animPath + "playerRight.bin");
             }
             if (!this.ActionObjectInPlayerRange(0))
             {
@@ -31,7 +35,6 @@ namespace Game.Scripting
                 SetPlayerAnimating(true);
                 WalkPlayerToActionTile();
             }
-            StopPlayingSound();
             OnScriptComplete();
         }
 

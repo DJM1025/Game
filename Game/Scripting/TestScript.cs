@@ -19,8 +19,8 @@ namespace Game.Scripting
         {
             if (ActionObjectInPlayerRange(0))
             {
-                SetPlayerAnimation(LoadAnimation(@"C:\Users\Dan\Desktop\GameGit\Game\Game\Animations\playerMakeFire.bin"));
-                PlaySoundOnLoop(@"C:\Users\Dan\Desktop\GameGit\Game\Game\sounds\lighter.wav");
+                SetPlayerAnimation(LoadAnimation(animPath + "playerMakeFire.bin"));
+                PlaySoundOnLoop(soundPath + "lighter.wav");
                 SetPlayerAnimating(true);
                 PauseScript(1000);
                 if (IsTileWalkable(0, -1))
@@ -40,8 +40,8 @@ namespace Game.Scripting
                     ForceMovePlayer(1, 0);
                 }
                 SetActionObjectCollision(true);
-                SetActionObjectAnimation(LoadAnimation(@"C:\Users\Dan\Desktop\GameGit\Game\Game\Animations\campFire.bin"), 10000);
-                PlaySoundOnLoop(@"C:\Users\Dan\Desktop\GameGit\Game\Game\Sounds\fire.mp3");
+                SetActionObjectAnimation(LoadAnimation(animPath + "campFire.bin"), 10000);
+                PlaySoundOnLoop(soundPath + "fire.mp3");
 
                 this._dataBridge.Player.PlayerMoved += Player_PlayerMoved;
                 SetActionObjectAnimating(true);

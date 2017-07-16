@@ -26,16 +26,16 @@ namespace Game
         public void loadPlayerAnimations()
         {
             Animation a = new Animation();
-            a.Load(@"C:\Users\Dan\Desktop\GameGit\Game\Game\Animations\playerFront.bin");
+            a.Load(animPath + "playerFront.bin");
             _animations.Add(WalkingDirection.Down, a);
             a = new Animation();
-            a.Load(@"C:\Users\Dan\Desktop\GameGit\Game\Game\Animations\playerLeft.bin");
+            a.Load(animPath + "playerLeft.bin");
             _animations.Add(WalkingDirection.Left, a);
             a = new Animation();
-            a.Load(@"C:\Users\Dan\Desktop\GameGit\Game\Game\Animations\playerRight.bin");
+            a.Load(animPath + "playerRight.bin");
             _animations.Add(WalkingDirection.Right, a);
             a = new Animation();
-            a.Load(@"C:\Users\Dan\Desktop\GameGit\Game\Game\Animations\playerBack.bin");
+            a.Load(animPath + "playerBack.bin");
             _animations.Add(WalkingDirection.Up, a);
             Animation = _animations[WalkingDirection.Down];
         }
@@ -150,6 +150,9 @@ namespace Game
         private Dictionary<WalkingDirection, Animation> _animations = new Dictionary<WalkingDirection, Animation>();
         private Int32 _size = 64;
         private Int32 _speed = 6;
+
+        protected const string animPath = @"C:\Users\DJMar_000\Desktop\Game\Game\Game\Animations\";
+        protected const string soundPath = @"C:\Users\DJMar_000\Desktop\Game\Game\Game\Sounds\";
 
         protected virtual void OnPlayerMoved()
         {

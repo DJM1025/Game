@@ -19,6 +19,7 @@ namespace Game.Scripting
 
         public void RunScript()
         {
+            _dataBridge = ScriptDataBridge.GetInstance();
             _actionObject = _dataBridge.ActionObject;
             Thread t = new Thread(new ThreadStart(ScriptLogic));
             t.Start();
@@ -249,8 +250,10 @@ namespace Game.Scripting
         private Boolean _isInterruptable = false;
         private String _name = String.Empty;
         protected ScriptDataBridge _dataBridge = ScriptDataBridge.GetInstance();
+        protected const string animPath = @"C:\Users\DJMar_000\Desktop\Game\Game\Game\Animations\";
+        protected const string soundPath = @"C:\Users\DJMar_000\Desktop\Game\Game\Game\Sounds\";
 
         [NonSerialized]
-        private Int32 _soundId = 0;
+        protected Int32 _soundId = 0;
     }
 }
