@@ -19,6 +19,7 @@ namespace Game.Scripting
         {
             if (ActionObjectInPlayerRange(0))
             {
+                ChopTreeScript._woodCount--;
                 SetPlayerAnimation(LoadAnimation(animPath + "playerMakeFire.bin"));
                 PlaySoundOnLoop(soundPath + "lighter.wav");
                 SetPlayerAnimating(true);
@@ -39,21 +40,23 @@ namespace Game.Scripting
                 {
                     ForceMovePlayer(1, 0);
                 }
+                FlickerLights(5, 100);
                 SetActionObjectCollision(true);
-                SetActionObjectAnimation(LoadAnimation(animPath + "campFire.bin"), 10000);
+                SetActionObjectAnimation(LoadAnimation(animPath + "campFire.bin"), 60000);
                 PlaySoundOnLoop(soundPath + "fire.mp3");
 
-                this._dataBridge.Player.PlayerMoved += Player_PlayerMoved;
+                ScriptDataBridge.Player.PlayerMoved += Player_PlayerMoved;
                 SetActionObjectAnimating(true);
                 SetPlayerAnimating(false);
                 OnScriptComplete();
-                PauseScript(10100);
+                PauseScript(60100);
                 StopPlayingSound();
                 SetActionObjectCollision(false);
                 SetActionObjectAnimating(false);
                 SetActionObjectImage(Properties.Resources.stone);
             }
-            this._dataBridge.Player.PlayerMoved -= Player_PlayerMoved;
+            StopFlickering();
+            ScriptDataBridge.Player.PlayerMoved -= Player_PlayerMoved;
             OnScriptComplete();
         }
 
@@ -63,11 +66,18 @@ namespace Game.Scripting
             SetSoundVolume(volume);
         }
 
-        private Boolean _playing = true;
-
         protected override void interrupt()
         {
-            throw new NotImplementedException();
+        }
+
+        protected override void Stop()
+        {
+            ScriptDataBridge.Player.PlayerMoved -= Player_PlayerMoved;
+            StopFlickering();
+            StopPlayingSound();
+            SetActionObjectCollision(false);
+            SetActionObjectAnimating(false);
+            OnScriptComplete();
         }
     }
 }

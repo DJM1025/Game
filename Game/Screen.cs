@@ -9,6 +9,7 @@ using System.Windows.Forms;
 using System.Threading;
 using Game.Scripting;
 using System.IO;
+using Game.NPC;
 
 namespace Game
 {
@@ -21,11 +22,12 @@ namespace Game
 
         private void Form1_Load(object sender, EventArgs e)
         {
+            _instance = this;
             loadMap();
             loadPlayer();
             loadSideBar();
-            ScriptDataBridge.GetInstance().Map = this.map;
-            ScriptDataBridge.GetInstance().Player = this.player;
+            ScriptDataBridge.Map = this.map;
+            ScriptDataBridge.Player = this.player;
             System.Threading.TimerCallback tc = new TimerCallback(setFps);
             t = new System.Threading.Timer(tc, null, 1000, 1000);
             _gamePanel.Paint += titleScreenPaint;
@@ -45,6 +47,7 @@ namespace Game
         {
             map.Draw(e.Graphics);
             player.Draw(e.Graphics);
+            NpcHelper.Draw(e.Graphics);
             e.Graphics.DrawString(fps.ToString(), new Font(FontFamily.GenericSerif, 12), new SolidBrush(Color.Yellow), 20, 20);
             frames++;
         }
@@ -69,7 +72,7 @@ namespace Game
             sideBarHandler = new SideBarHandler(_sideBar);
             if (isDevMode)
             {
-                sideBarHandler.setDevMode(_tileSize);
+                sideBarHandler.setDevMode(TileSize);
                 //map.ShowCollisions = true;
             }
         }
@@ -78,6 +81,31 @@ namespace Game
         {
             map = new Map("MyFile.bin");
             //map = new Map(_mapSize, _tileSize);
+            Thread t = new System.Threading.Thread(() =>
+            {
+                Boolean increasing = false;
+                while (_isRunning)
+                {
+                    if (increasing)
+                    {
+                        GlobalLighting.Instance.Brightness += 1;
+                        if (GlobalLighting.Instance.Brightness == 25)
+                        {
+                            increasing = false;
+                        }
+                    }
+                    else
+                    {
+                        GlobalLighting.Instance.Brightness -= 1;
+                    }
+                    if (Math.Abs(GlobalLighting.Instance.Brightness) == 150)
+                    {
+                        increasing = !increasing;
+                    }
+                    System.Threading.Thread.Sleep(500);
+                }
+            });
+            t.Start();
         }
 
         private void loadPlayer()
@@ -99,6 +127,7 @@ namespace Game
                     tempBox.Items.Add("Set Image");
                     tempBox.Items.Add("Animate");
                     tempBox.Items.Add("Last Animation");
+                    tempBox.Items.Add("Add Script");
                     tempBox.Height = tempBox.PreferredHeight;
                     tempBox.Click += (object s, EventArgs ea) =>
                     {
@@ -140,6 +169,25 @@ namespace Game
                             }
                             //tile.Animating = !tile.Animating;
                         }
+                        if (clicked.SelectedItem == "Add Script")
+                        {
+                            List<BaseScript> scripts = new List<BaseScript>();
+                            var types = System.Reflection.Assembly.GetExecutingAssembly().GetTypes();
+                            var scriptingTypes = types.Where(type => type.Namespace.Contains("Scripting"));
+                            foreach (var scriptingType in scriptingTypes)
+                            {
+                                try
+                                {
+                                    scripts.Add((BaseScript)System.Reflection.Assembly.GetExecutingAssembly().CreateInstance(scriptingType.ToString()));
+                                }
+                                catch
+                                {
+                                }
+                            }
+                            _helper = new DevTools.ScriptHelper.ScriptHelper(tile);
+                            _helper.Scripts = scripts;
+                            _helper.ShowDialog();
+                        }
                         tempBox.Dispose();
                     };
                     tempBox.MouseLeave += (object s, EventArgs ea) =>
@@ -167,9 +215,14 @@ namespace Game
                     tile.Collide = !tile.Collide;
                     return;
                 }
+                if (ModifierKeys.HasFlag(Keys.Alt))
+                {
+                    MapTile tile = map.GetClickedTile(e.X, e.Y);
+                    _helper?.CopyScriptsToObject(tile);
+                    return;
+                }
             }
-            MapTile clickedTile = map.GetClickedTile(e.X, e.Y);
-            ScriptDataBridge.GetInstance().ActionObject = clickedTile;
+            InteractableObject clickedTile = (InteractableObject)NpcHelper.GetClickedNPC(e.X, e.Y) ?? (InteractableObject)map.GetClickedTile(e.X, e.Y);
             if (e.Button == System.Windows.Forms.MouseButtons.Right)
             {
                 if (!isDevMode)
@@ -182,6 +235,8 @@ namespace Game
                 clickedTile.DefaultInteract();
             }
         }
+
+        private DevTools.ScriptHelper.ScriptHelper _helper;
 
 
         protected override bool ProcessDialogKey(Keys keyData)
@@ -208,20 +263,36 @@ namespace Game
             sideBarHandler.Dispose();
             _sideBar.Dispose();
             this.Dispose();
+            MasterRunningScriptList.StopAllScripts();
             Sound.SoundHandler.UnloadAllSounds();
-            //Sound.SoundActionConsumer.IsRunning = false;
             if (isDevMode)
             {
                 map.Save();
             }
         }
 
+        public static Int32 ScreenWidth
+        {
+            get
+            {
+                return _instance._gamePanel.Width;
+            }
+        }
+
+        public static Int32 ScreenHeight
+        {
+            get
+            {
+                return _instance._gamePanel.Height;
+            }
+        }
+
         private bool _isRunning = true;
         private Thread _renderThread = null;
         private Int32 _mapSize = 100;
-        public static Int32 _tileSize = 64;
+        public static Int32 TileSize = 64;
         private Int32 speed = 6;
-        private Boolean isDevMode = false;
+        public static Boolean isDevMode = false;
 
         private Map map;
         private Player player;
@@ -230,6 +301,8 @@ namespace Game
         private Int32 frames = 0;
         private Int32 fps = 0;
         System.Threading.Timer t;
+
+        private static Screen _instance;
 
         public void setFps(object target)
         {

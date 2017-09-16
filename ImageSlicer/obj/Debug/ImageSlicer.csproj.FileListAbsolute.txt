@@ -15,3 +15,4 @@ C:\Users\Dan\Desktop\GameGit\Game\ImageSlicer\obj\Debug\ImageSlicer.Properties.R
 C:\Users\Dan\Desktop\GameGit\Game\ImageSlicer\obj\Debug\ImageSlicer.csproj.GenerateResource.Cache
 C:\Users\Dan\Desktop\GameGit\Game\ImageSlicer\obj\Debug\ImageSlicer.exe
 C:\Users\Dan\Desktop\GameGit\Game\ImageSlicer\obj\Debug\ImageSlicer.pdb
+C:\Users\Dan\Desktop\GameGit\Game\ImageSlicer\obj\Debug\ImageSlicer.csprojResolveAssemblyReference.cache

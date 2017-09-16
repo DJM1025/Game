@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 
 namespace Game.Scripting
 {
@@ -13,19 +14,23 @@ namespace Game.Scripting
         {
         }
 
-        public static ScriptDataBridge GetInstance()
+        public static ScriptDataBridge GetInstance(BaseScript key)
         {
-            if (_instance == null)
+            if (!_instances.ContainsKey(key))
             {
-                _instance = new ScriptDataBridge();
+                _instances.Add(key, new ScriptDataBridge());
             }
-            return _instance;
+            return _instances[key];
         }
 
-        public Map Map
+        public static Map Map
         {
             get
             {
+                if (_map == null)
+                {
+                    System.Threading.Thread.Sleep(1000);
+                }
                 return _map;
             }
             set
@@ -34,7 +39,7 @@ namespace Game.Scripting
             }
         }
 
-        public Player Player
+        public static Player Player
         {
             get
             {
@@ -43,6 +48,7 @@ namespace Game.Scripting
             set
             {
                 _player = value;
+                DataLoaded.Set();
             }
         }
 
@@ -57,12 +63,16 @@ namespace Game.Scripting
                 _actionObject = value;
             }
         }
+
+        [NonSerialized]
+        public static EventWaitHandle DataLoaded = new EventWaitHandle(false, EventResetMode.ManualReset);
+
         [NonSerialized]
         private InteractableObject _actionObject;
         [NonSerialized]
-        private Player _player;
-        private Map _map;
+        private static Player _player;
+        private static Map _map;
         [NonSerialized]
-        private static ScriptDataBridge _instance;
+        private static Dictionary<BaseScript, ScriptDataBridge> _instances = new Dictionary<BaseScript, ScriptDataBridge>();
     }
 }

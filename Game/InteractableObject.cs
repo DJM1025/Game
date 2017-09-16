@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using Game.Scripting;
+using System.Runtime.Serialization;
 
 namespace Game
 {
@@ -23,16 +24,23 @@ namespace Game
             screen.ContextMenu.Show(screen, new Point(x, y));
         }
 
+        public void StartDefaultScript()
+        {
+            _current = DefaultScript;
+            ScriptDataBridge.GetInstance(_current).ActionObject = this;
+            _scriptRunning = true;
+            DefaultScript.RunScript();
+        }
+
         public void DefaultInteract()
         {
             //Temp Code, Let designer set scripts and searialize them.
             if (Scripts.Count == 0)
             {
                 Scripts.Add(new PlayerMoveScript());
-                Scripts.Add(new TestScript());
             }
             //Temp Code
-            if (!_scriptRunning || _current.IsInterruptable)
+            if (!_scriptRunning || (_scriptRunning && _current.IsInterruptable))
             {
                 _current?.InterruptScript();
                 _current = Scripts.FirstOrDefault();
@@ -40,8 +48,28 @@ namespace Game
                 {
                     _scriptRunning = true;
                     _current.ScriptComplete += _current_ScriptComplete;
+                    ScriptDataBridge.GetInstance(_current).ActionObject = this;
                     _current.RunScript();
                 }
+            }
+        }
+
+        [System.Runtime.Serialization.OnDeserialized()]
+        private void onDeserialized(StreamingContext context)
+        {
+            if (Scripts.Count == 0)
+            {
+                if (_playerMoveScript == null)
+                {
+                    _playerMoveScript = new PlayerMoveScript();
+                }
+                Scripts.Add(_playerMoveScript);
+            }
+            if (_defaultScript != null)
+            {
+                _current = _defaultScript;
+                ScriptDataBridge.GetInstance(_current).ActionObject = this;
+                _defaultScript.RunScript();
             }
         }
 
@@ -52,7 +80,6 @@ namespace Game
             if (Scripts.Count == 0)
             {
                 Scripts.Add(new PlayerMoveScript());
-                Scripts.Add(new TestScript());
             }
             //Temp Code
             foreach (BaseScript s in Scripts)
@@ -76,6 +103,7 @@ namespace Game
                 _scriptRunning = true;
                 _current = Scripts.First(script => script.Name.Equals(((MenuItem)sender).Text));
                 _current.ScriptComplete += _current_ScriptComplete;
+                ScriptDataBridge.GetInstance(_current).ActionObject = this;
                 _current.RunScript();
             }
             else if(_current.IsInterruptable)
@@ -84,6 +112,7 @@ namespace Game
                 _scriptRunning = true;
                 _current = Scripts.First(script => script.Name.Equals(((MenuItem)sender).Text));
                 _current.ScriptComplete += _current_ScriptComplete;
+                ScriptDataBridge.GetInstance(_current).ActionObject = this;
                 _current.RunScript();
             }
             menu.Dispose();
@@ -106,11 +135,27 @@ namespace Game
             }
         }
 
+        public BaseScript DefaultScript
+        {
+            get
+            {
+                return _defaultScript;
+            }
+            set
+            {
+                _defaultScript?.StopScript();
+                _defaultScript = value;
+            }
+        }
+
         private Player _player;
         private static Boolean _scriptRunning = false;
         private static BaseScript _current;
         private List<BaseScript> _scripts = new List<BaseScript>();
+        private BaseScript _defaultScript;
         [NonSerialized]
         private System.Windows.Forms.ContextMenu menu;
+        [NonSerialized]
+        private static PlayerMoveScript _playerMoveScript = new PlayerMoveScript();
     }
 }

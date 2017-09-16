@@ -16,13 +16,28 @@ namespace Game.Scripting
         abstract public void ScriptLogic();
 
         abstract protected void interrupt();
+        [NonSerialized]
+        private Thread t;
 
         public void RunScript()
         {
-            _dataBridge = ScriptDataBridge.GetInstance();
-            _actionObject = _dataBridge.ActionObject;
-            Thread t = new Thread(new ThreadStart(ScriptLogic));
-            t.Start();
+            if (!MasterRunningScriptList.Closing)
+            {
+                _dataBridge = ScriptDataBridge.GetInstance(this);
+                _actionObject = _dataBridge.ActionObject;
+                MasterRunningScriptList.AddScript(this);
+                t = new Thread(new ThreadStart(threadProc));
+                t.Start();
+            }
+        }
+
+        private void threadProc()
+        {
+            if (ScriptDataBridge.Player == null)
+            {
+                ScriptDataBridge.DataLoaded.WaitOne();
+            }
+            ScriptLogic();
         }
 
         public void SetSoundVolume(Int32 volume)
@@ -84,16 +99,16 @@ namespace Game.Scripting
 
         public void ForceMovePlayer(Int32 tilesDown, Int32 tilesRight)
         {
-            var targetX = _dataBridge.Player.Location.X + (_dataBridge.Map.TileSize * tilesRight);
-            var targetY = _dataBridge.Player.Location.Y + (_dataBridge.Map.TileSize * tilesDown);
-            _dataBridge.Player.MoveToLocation(targetX, targetY, _dataBridge.Map);
+            var targetX = ScriptDataBridge.Player.Location.X + (ScriptDataBridge.Map.TileSize * tilesRight);
+            var targetY = ScriptDataBridge.Player.Location.Y + (ScriptDataBridge.Map.TileSize * tilesDown);
+            ScriptDataBridge.Player.MoveToLocation(targetX, targetY, ScriptDataBridge.Map);
         }
 
         public Boolean IsTileWalkable(Int32 tilesDown, Int32 tilesRight)
         {
-            var targetX = _dataBridge.Player.Location.X + (_dataBridge.Map.TileSize * tilesRight);
-            var targetY = _dataBridge.Player.Location.Y + (_dataBridge.Map.TileSize * tilesDown);
-            if (_dataBridge.Map.GetClickedTile(targetX, targetY).Collide)
+            var targetX = ScriptDataBridge.Player.Location.X + (ScriptDataBridge.Map.TileSize * tilesRight);
+            var targetY = ScriptDataBridge.Player.Location.Y + (ScriptDataBridge.Map.TileSize * tilesDown);
+            if (ScriptDataBridge.Map.GetClickedTile(targetX, targetY).Collide)
             {
                 return false;
             }
@@ -102,14 +117,14 @@ namespace Game.Scripting
 
         public void SetPlayerAnimation(Animation a, Int32 timeInMs)
         {
-            var tempAnimating = _dataBridge.Player.Animating;
-            var temp = _dataBridge.Player.Animation;
+            var tempAnimating = ScriptDataBridge.Player.Animating;
+            var temp = ScriptDataBridge.Player.Animation;
             SetPlayerAnimation(a);
             System.Timers.Timer t = new System.Timers.Timer(timeInMs);
             t.Elapsed += (sender, e) =>
             {
                 SetPlayerAnimation(temp);
-                _dataBridge.Player.Animating = tempAnimating;
+                ScriptDataBridge.Player.Animating = tempAnimating;
             };
             t.AutoReset = false;
             t.Start();
@@ -118,12 +133,12 @@ namespace Game.Scripting
 
         public void SetPlayerAnimation(Animation a)
         {
-            _dataBridge.Player.Animation = a;
+            ScriptDataBridge.Player.Animation = a;
         }
 
         public void SetPlayerAnimating(Boolean animating)
         {
-            _dataBridge.Player.Animating = animating;
+            ScriptDataBridge.Player.Animating = animating;
         }
 
         public void SetActionObjectAnimation(Animation a, Int32 timeInMs)
@@ -176,8 +191,8 @@ namespace Game.Scripting
 
         public Boolean ActionObjectInPlayerRange(Int32 tileRange)
         {
-            var actionObjectTile = _dataBridge.Map.GetClickedTile(_actionObject.Location.X, _actionObject.Location.Y);
-            var playerTile = _dataBridge.Player.CurrentTile;
+            var actionObjectTile = ScriptDataBridge.Map.GetClickedTile(_actionObject.Location.X, _actionObject.Location.Y);
+            var playerTile = ScriptDataBridge.Player.CurrentTile;
             var deltaX = playerTile.MapRow - actionObjectTile.MapRow;
             var deltaY = playerTile.MapCol - actionObjectTile.MapCol;
             var distance = Math.Sqrt((deltaX * deltaX) + (deltaY * deltaY));
@@ -186,18 +201,106 @@ namespace Game.Scripting
 
         public Double GetPlayerRangeFromActionObject()
         {
-            var actionObjectTile = _dataBridge.Map.GetClickedTile(_actionObject.Location.X, _actionObject.Location.Y);
-            var playerTile = _dataBridge.Player.CurrentTile;
+            var actionObjectTile = ScriptDataBridge.Map.GetClickedTile(_actionObject.Location.X, _actionObject.Location.Y);
+            var playerTile = ScriptDataBridge.Player.CurrentTile;
             var deltaX = playerTile.MapRow - actionObjectTile.MapRow;
             var deltaY = playerTile.MapCol - actionObjectTile.MapCol;
             return Math.Sqrt((deltaX * deltaX) + (deltaY * deltaY));
         }
+
+        public void SetLightRadius(Int32 radius, Int32 brightness)
+        {
+            var step = brightness / radius;
+            _brightnesses = new List<List<Int32>>();
+            for (int i = -radius; i < radius; i++)
+            {
+                _brightnesses.Add(new List<Int32>());
+                for (int j = -radius; j < radius; j++)
+                {
+                    //var X = _dataBridge.Map.findClickedColIndex(_actionObject.Location.X);
+                    //var Y = _dataBridge.Map.findClickedRowIndex(_actionObject.Location.Y); 
+                    var distance = Math.Sqrt((i * i) + (j * j));
+                    if (distance <= radius)//&& shouldLight(X + i, Y + j, X, Y))
+                    {
+                        _brightnesses[i + radius].Add((Int32)((radius - distance) * step));
+                        ScriptDataBridge.Map.Tiles[Y + i][X + j].Brightness += _brightnesses[i + radius][j + radius];
+                    }
+                    else
+                    {
+                        _brightnesses[i + radius].Add(0);
+                    }
+                }
+            }
+        }
+
+        public void RemoveLightRadius(Int32 radius)
+        {
+            for (int i = -radius; i < radius; i++)
+            {
+                for (int j = -radius; j < radius; j++)
+                {
+                    //var X = _dataBridge.Map.findClickedColIndex(_actionObject.Location.X);
+                    //var Y = _dataBridge.Map.findClickedRowIndex(_actionObject.Location.Y);
+                    ScriptDataBridge.Map.Tiles[Y + i][X + j].Brightness -= _brightnesses[i + radius][j + radius];
+                }
+            }
+        }
+
+        public void FlickerLights(Int32 radius, Int32 brightness)
+        {
+            Thread thread = new System.Threading.Thread(() =>
+            {
+                _flickering = true;
+                while (_flickering)
+                {
+                    lock (_actionObject)
+                    {
+                        X = ScriptDataBridge.Map.findClickedColIndex(_actionObject.Location.X);
+                        Y = ScriptDataBridge.Map.findClickedRowIndex(_actionObject.Location.Y);
+                        var light = RandomHelper.Next(brightness / 3) + ((brightness * 2) / 3);
+                        lock (GlobalLighting.Instance.Matrix)
+                        {
+                            SetLightRadius(radius, light);
+                        }
+                        System.Threading.Thread.Sleep(100);
+                        lock (GlobalLighting.Instance.Matrix)
+                        {
+                            RemoveLightRadius(radius);
+                        }
+                    }
+                }
+            });
+            thread.Start();
+        }
+
+        public void StopFlickering()
+        {
+            _flickering = false;
+        }
+
+        [NonSerialized]
+        private Int32 X = 0;
+        private Int32 Y = 0;
+        private bool _flickering = true;
+        List<List<Int32>> _brightnesses = new List<List<int>>();
 
         public void InterruptScript()
         {
             if (_isInterruptable)
             {
                 interrupt();
+                MasterRunningScriptList.Remove(this);
+            }
+        }
+
+        protected abstract void Stop();
+
+        public void StopScript()
+        {
+            Stop();
+            if (t.IsAlive)
+            {
+                t.Abort();
             }
         }
 
@@ -249,11 +352,63 @@ namespace Game.Scripting
         private Boolean _playerTriggerable = true;
         private Boolean _isInterruptable = false;
         private String _name = String.Empty;
-        protected ScriptDataBridge _dataBridge = ScriptDataBridge.GetInstance();
-        protected const string animPath = @"C:\Users\DJMar_000\Desktop\Game\Game\Game\Animations\";
-        protected const string soundPath = @"C:\Users\DJMar_000\Desktop\Game\Game\Game\Sounds\";
+        protected ScriptDataBridge _dataBridge;// = ScriptDataBridge.GetInstance(this);
+        public static readonly string animPath = System.IO.Directory.GetCurrentDirectory() + @"\..\..\Animations\";
+        public static readonly string soundPath = System.IO.Directory.GetCurrentDirectory() + @"\..\..\Sounds\";
 
         [NonSerialized]
         protected Int32 _soundId = 0;
+        public static Boolean AllScriptsEnding = false;
     }
 }
+
+
+/*
+private Boolean shouldLight(Int32 mapX, Int32 mapY, Int32 actionX, Int32 actionY)
+{
+    var mapTile = _dataBridge.Map.Tiles[mapY][mapX];
+    var actionTile = _dataBridge.Map.Tiles[actionY][actionX];
+
+    Int32 mapCenterX = mapTile.Location.X + (mapTile.TileSize / 2);
+    Int32 mapCenterY = mapTile.Location.Y + (mapTile.TileSize / 2);
+    Int32 actionCenterX = actionTile.Location.X + (mapTile.TileSize / 2);
+    Int32 actionCenterY = actionTile.Location.Y + (mapTile.TileSize / 2);
+
+    var dX = mapCenterX - actionCenterX;
+    var dY = mapCenterY - actionCenterY;
+    var gcd = GCD(Math.Abs(dY), Math.Abs(dX));
+    if (gcd == 0)
+    {
+        return true;
+    }
+    dX = dX / gcd;
+    dY = dY / gcd;
+
+    var currentX = actionCenterX + dX;
+    var currentY = actionCenterY + dY;
+    var currentTile = _dataBridge.Map.GetClickedTile(currentX, currentY);
+
+    while (currentX != mapCenterX && currentY != mapCenterY)
+    {
+        if (currentTile.Collide)
+        {
+            return false;
+        }
+        currentX += dX;
+        currentY += dY;
+        currentTile = _dataBridge.Map.GetClickedTile(currentX, currentY);
+    }
+    return true;
+}
+
+private Int32 GCD(int a, int b)
+{
+    while (b > 0)
+    {
+        int rem = a % b;
+        a = b;
+        b = rem;
+    }
+    return a;
+}
+*/

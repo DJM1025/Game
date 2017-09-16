@@ -3,356 +3,161 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Drawing;
+using Game.Scripting;
 
 namespace Game
 {
     class PathingAlgorithm
     {
-        public PathingAlgorithm(Map map)
+        public List<Int32> getBestPathAStar(MapTile fromTile, MapTile toTile)
         {
-            _map = map;
-        }
-
-        public List<Int32> GetMovementDirections(MapTile fromTile, MapTile toTile)
-        {
-            startTile = fromTile;
-            endTile = toTile;
             if (toTile.Collide)
             {
-                return new List<Int32> { 0 };
+                return new List<Int32>();
             }
-            List<Int32> directions = getBestPath();
-            return directions;
-        }
+            var startNode = new ASNode(fromTile, this);
+            _endingNode = new ASNode(toTile, this);
+            var endNode = startNode.GetBestPath();
 
-        private List<Int32> getBestPath()
-        {
-            Queue<Node<Point>> nodeQueue = new Queue<Node<Point>>();
-            Node<Point> paths = new Node<Point>(new Point(startTile.MapCol, startTile.MapRow), null);
-            nodeQueue.Enqueue(paths);
-            Node<Point> bestPath = null;
-            try
-            {
-                bestPath = getBestPath(nodeQueue);
+            Stack<Int32> path = new Stack<int>();
 
-            }
-            catch (Exception e)
+            var currentNode = endNode;
+            if (endNode != null)
             {
-                return new List<Int32> { 0 };
-            }
-            Node<Point> current = bestPath;
-            Stack<Int32> path = new Stack<Int32>();
-            if (current == null)
-            {
-                path.Push(0);
-                return path.ToList();
-            }
-            while (current.Parent != null)
-            {
-                Point parentPoint = current.Parent.Value;
-                if (parentPoint.X > current.Value.X)
+                while (currentNode.Parent != null)
                 {
-                    path.Push(4);
+                    if (currentNode.Parent.Tile.MapCol > currentNode.Tile.MapCol)
+                    {
+                        path.Push(4);
+                    }
+                    else if (currentNode.Parent.Tile.MapCol < currentNode.Tile.MapCol)
+                    {
+                        path.Push(2);
+                    }
+                    else if (currentNode.Parent.Tile.MapRow > currentNode.Tile.MapRow)
+                    {
+                        path.Push(1);
+                    }
+                    else if (currentNode.Parent.Tile.MapRow < currentNode.Tile.MapRow)
+                    {
+                        path.Push(3);
+                    }
+                    currentNode = currentNode.Parent;
                 }
-                if (parentPoint.X < current.Value.X)
-                {
-                    path.Push(2);
-                }
-                if (parentPoint.Y > current.Value.Y)
-                {
-                    path.Push(1);
-                }
-                if (parentPoint.Y < current.Value.Y)
-                {
-                    path.Push(3);
-                }
-                current = current.Parent;
             }
-            String s = "";
-            foreach (var i in path)
-            {
-                s += i.ToString();
-            }
-            System.Console.WriteLine(s);
             return path.ToList();
         }
 
-        private void stopTime(object sender, System.Timers.ElapsedEventArgs e)
-        {
-            ((System.Timers.Timer)sender).Stop();
-            isPathFinding = false;
-        }
-
-        private volatile Boolean isPathFinding = true;
-
-        private Node<Point> getBestPath(Queue<Node<Point>> nodeQueue)
-        {
-            System.Timers.Timer t = new System.Timers.Timer(100);
-            t.Elapsed += stopTime;
-            t.Start();
-
-            while (nodeQueue.Count > 0 && isPathFinding)
-            {
-                Node<Point> current = nodeQueue.Dequeue();
-                addTile(new Point(current.Value.X + 1, current.Value.Y), current);
-                addTile(new Point(current.Value.X - 1, current.Value.Y), current);
-                addTile(new Point(current.Value.X, current.Value.Y + 1), current);
-                addTile(new Point(current.Value.X, current.Value.Y - 1), current);
-                var currentChildren = current.Children;
-                foreach (var child in currentChildren)
-                {
-                    nodeQueue.Enqueue(child);
-                    if (child.Value == new Point(endTile.MapCol, endTile.MapRow))
-                    {
-                        return child;
-                    }
-                }
-            }
-            return null;
-        }
-
-        private void addTile(Point p, Node<Point> parent)
-        {
-            try
-            {
-                if (!_map.Tiles[p.Y][p.X].Collide && !nodeParentHasValue(parent, p))
-                {
-                    parent.Children.Add(new Node<Point>(p, parent));
-                }
-            }
-            catch
-            {
-                return;
-            }
-        }
-
-        private Boolean nodeParentHasValue(Node<Point> node, Point p)
-        {
-            if (node.Parent != null)
-            {
-                if ((new Point(node.Parent.Value.X, node.Parent.Value.Y)).Equals(p))
-                {
-                    return true;
-                }
-                else
-                {
-                    return nodeParentHasValue(node.Parent, p);
-                }
-            }
-            return false;
-        }
-
-        /*
-        private List<Int32> getBestPath()
-        {
-            List<Int32> best = new List<Int32>();
-            Int32 maxFitness = Int32.MaxValue;
-            var population = getChromosomes();
-            for (int generation = 0; generation < numGenerations; generation++)
-            {
-                List<Double> fitnessRatios = new List<Double>();
-                List<Int32> fitness = new List<Int32>();
-                for(int i = 0; i < populationSize; i++)
-                {
-                    fitness.Add(getFitness(population[i]));
-                }
-
-                for (int i = 0; i < populationSize; i++)
-                {
-                    if (fitness[i] < maxFitness)
-                    {
-                        maxFitness = fitness[i];
-                        best = population[i];
-                    }
-                }
-                Int32 minFitness = fitness.Max();
-                Double avg = fitness.Average();
-                for (int i = 0; i < populationSize; i++)
-                {
-                    fitnessRatios.Add((double)avg / (double)fitness[i]);
-                }
-                population.Add(best);
-                for (int i = 0; i < populationSize * (1 - mutationRate); i++ )
-                {
-                    population.Add(population[pickChromosomeIndex(fitnessRatios)]);
-                }
-                while(population.Count < populationSize * 2)
-                {
-                    Int32 index1 = pickChromosomeIndex(fitnessRatios);
-                    Int32 index2 = pickChromosomeIndex(fitnessRatios);
-                    population.Add(crossover(population[index1], population[index2]));
-                }
-                Random r = new Random();
-                for (int i = 0; i < populationSize * mutationRate; i++)
-                {
-                    if (mutationRate > r.NextDouble())
-                    {
-                        population[i][r.Next(0, chromosomeLength)] = r.Next(0, 5);
-                    }
-                }
-                population.RemoveRange(0, populationSize);
-
-                //Do crossover and mutationy thingss
-            }
-
-            return best;
-        }
-
-        private Int32 pickChromosomeIndex(List<Double> fitness)
-        {
-            Random r = new Random();
-            Double worstFitness = fitness.Max();
-            Int32 index = r.Next(0, fitness.Count);
-            while (fitness[index] > r.NextDouble())
-            {
-                index = r.Next(0, fitness.Count);
-            }
-            return index;
-        }
-
-        private List<Int32> crossover(List<Int32> c1, List<Int32> c2)
-        {
-            Random r = new Random();
-            Int32 index = r.Next(1, chromosomeLength);
-            List<Int32> result = new List<Int32>();
-
-            result.AddRange(c1.GetRange(0, index));
-            result.AddRange(c2.GetRange(index, chromosomeLength - index));
-            return result;
-        }
-        */
-        private void setRowColumnIndex()
-        {
-            var tiles = _map.Tiles;
-            Int32 currentIndex = 0;
-            for (int i = 0; i < _map.MapSize; i++)
-            {
-                currentIndex = tiles[i].IndexOf(startTile);
-                if (currentIndex >= 0)
-                {
-                    startTileRowIndex = i;
-                    startTileColIndex = currentIndex;
-                }
-                currentIndex = tiles[i].IndexOf(startTile);
-                if (currentIndex >= 0)
-                {
-                    endTileRowIndex = i;
-                    endTileColIndex = currentIndex;
-                }
-            }
-        }
-        /*
-        private List<List<Int32>> getChromosomes()
-        {
-            List<List<Int32>> chromosomes = new List<List<Int32>>();
-            Random r = new Random();
-            for (int i = 0; i < populationSize; i++)
-            {
-                chromosomes.Add(new List<Int32>());
-                for (int j = 0; j < chromosomeLength; j++)
-                {
-                    chromosomes[i].Add(r.Next(1, 5));
-                }
-            }
-            return chromosomes;
-        }
-
-        private Int32 getFitness(List<Int32> chromosome)
-        {
-            Int32 fitness = 0;
-            Int32 currentColIndex = startTileColIndex;
-            Int32 currentRowIndex = startTileRowIndex;
-            var tiles = _map.Tiles;
-            for (int i = 0; i < chromosomeLength; i++)
-            {
-                //EDGE THING THAT I KNOW
-                if (chromosome[i] == 1 && currentRowIndex > 0)
-                {
-                    currentRowIndex--;
-                }
-                if (chromosome[i] == 2 && currentColIndex < _map.MapSize - 1)
-                {
-                    currentColIndex++;
-                }
-                if (chromosome[i] == 3 && currentRowIndex < _map.MapSize - 1)
-                {
-                    currentRowIndex++;
-                }
-                if (chromosome[i] == 4 && currentColIndex > 0)
-                {
-                    currentColIndex--;
-                }
-                if (tiles[currentRowIndex][currentColIndex] == endTile)
-                {
-                    return fitness++;
-                }
-                fitness++;
-                if (tiles[currentRowIndex][currentColIndex].Collide)
-                {
-                    fitness += 10;
-                }
-            }
-            fitness += Math.Abs((currentRowIndex - endTileRowIndex) * 3);
-            fitness += Math.Abs((currentColIndex - endTileColIndex) * 3);
-            return fitness;
-        }
-        */
-        private MapTile startTile;
-        private MapTile endTile;
-        /*
-        private Int32 numGenerations = 100;
-        private Int32 populationSize = 100;
-        private Int32 chromosomeLength = 20;
-        private Double crossoverRate = .7;
-        private Double mutationRate = .2;
-        */
-        private Int32 startTileRowIndex = 0;
-        private Int32 startTileColIndex = 0;
-
-        private Int32 endTileRowIndex = 0;
-        private Int32 endTileColIndex = 0;
-
-        Map _map;
-    }
-
-    class Node<T>
-    {
-
-        public Node(T value, Node<T> parent)
-        {
-            Value = value;
-            Parent = parent;
-        }
-
-        public Boolean ParentHasValue(T value)
-        {
-            if (Parent != null)
-            {
-                if (Parent.Value.Equals(value))
-                {
-                    return true;
-                }
-                else
-                {
-                    return Parent.ParentHasValue(value);
-                }
-            }
-            return false;
-        }
-
-        public List<Node<T>> Children
+        public List<ASNode> OpenSet
         {
             get
             {
-                return _children;
-            }
-            set
-            {
-                _children = value;
+                return _openSet;
             }
         }
 
-        public Node<T> Parent
+        public List<ASNode> ClosedSet
+        {
+            get
+            {
+                return _closedSet;
+            }
+        }
+
+        public ASNode EndingNode
+        {
+            get
+            {
+                return _endingNode;
+            }
+        }
+
+        private List<ASNode> _openSet = new List<ASNode>();
+        private List<ASNode> _closedSet = new List<ASNode>();
+
+        private ASNode _endingNode;
+
+    }
+    class ASNode
+    {
+        public ASNode(MapTile currentTile, PathingAlgorithm algorithm)
+        {
+            _currentTile = currentTile;
+            _algorithm = algorithm;
+        }
+
+        public ASNode GetBestPath()
+        {
+            System.Timers.Timer t = new System.Timers.Timer(100);
+            t.Elapsed += T_Elapsed;
+
+            _algorithm.ClosedSet.Add(this);
+            calculateAdjacentNodes();
+            var lowestNode = getLowestFScoreNode();
+            while (lowestNode != null && lowestNode.HCost > 0 && _isPathFinding)
+            {
+                //var img = lowestNode.Tile.Image;
+                //lowestNode.Tile.Image = Properties.Resources.stone;
+                //System.Threading.Thread.Sleep(100);
+                _algorithm.OpenSet.Remove(lowestNode);
+                _algorithm.ClosedSet.Add(lowestNode);
+                lowestNode.calculateAdjacentNodes();
+                lowestNode = getLowestFScoreNode();
+            }
+            return lowestNode;
+        }
+
+        private void T_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
+        {
+            ((System.Timers.Timer)sender).Stop();
+            _isPathFinding = false;
+        }
+
+        #region Properties
+
+        public Int32 GCost
+        {
+            get
+            {
+                return _gCost;
+            }
+            set
+            {
+                _gCost = value;
+            }
+        }
+
+        public Int32 HCost
+        {
+            get
+            {
+                if (_hCost < 0)
+                {
+                    Int32 dX = Math.Abs(_currentTile.MapCol - _algorithm.EndingNode.Tile.MapCol);
+                    Int32 dY = Math.Abs(_currentTile.MapRow - _algorithm.EndingNode.Tile.MapRow);
+                    _hCost = dX + dY;
+                }
+                return _hCost * 2;
+            }
+        }
+
+        public Int32 FCost
+        {
+            get
+            {
+                return GCost + HCost;
+            }
+        }
+
+        public MapTile Tile
+        {
+            get
+            {
+                return _currentTile;
+            }
+        }
+
+        public ASNode Parent
         {
             get
             {
@@ -364,22 +169,96 @@ namespace Game
             }
         }
 
-        public T Value
+        #endregion
+
+        #region Private Methods
+
+        private ASNode getLowestFScoreNode()
         {
-            get
+            if (_algorithm.OpenSet.Count == 0)
             {
-                return _value;
+                return null;
             }
-            set
+            Int32 zeroHIndex = _algorithm.OpenSet.FindIndex(node => node.HCost == 0);
+            if (zeroHIndex != -1)
             {
-                _value = value;
+                return _algorithm.OpenSet[zeroHIndex];
+            }
+            var min = _algorithm.OpenSet.Min(node => node.FCost);
+            var minNodes = _algorithm.OpenSet.Where(node => node.FCost == min).ToList();
+            var minG = minNodes[0].GCost;
+            var minGIndex = 0;
+            for (int i = 1; i < minNodes.Count; i++)
+            {
+                if (minNodes[i].GCost < minG)
+                {
+                    minG = minNodes[i].GCost;
+                    minGIndex = i;
+                }
+            }
+            return minNodes[minGIndex];
+        }
+
+        public void calculateAdjacentNodes()
+        {
+            Int32 x = _currentTile.MapCol;
+            Int32 y = _currentTile.MapRow;
+            updateTileAtLocation(x + 1, y);
+            updateTileAtLocation(x - 1, y);
+            updateTileAtLocation(x, y + 1);
+            updateTileAtLocation(x, y - 1);
+        }
+
+        private void updateTileAtLocation(Int32 x, Int32 y)
+        {
+            if (x < ScriptDataBridge.Map.MapSize && x >= 0)
+            {
+                if (y < ScriptDataBridge.Map.MapSize && y >= 0)
+                {
+                    var tempTile = ScriptDataBridge.Map.Tiles[y][x];
+                    if (!tempTile.Collide)
+                    {
+                        addTileToLists(tempTile);
+                    }
+                }
             }
         }
 
-        private Node<T> _parent;
+        private void addTileToLists(MapTile tile)
+        {
+            if (!_algorithm.ClosedSet.Any(node => node.Tile == tile))
+            {
+                var currentNode = _algorithm.OpenSet.FirstOrDefault(node => node.Tile == tile);
+                if (currentNode == null)
+                {
+                    currentNode = new ASNode(tile, _algorithm);
+                    currentNode.GCost = GCost + 1;
+                    currentNode.Parent = this;
+                    _adjacentNodes.Add(currentNode);
+                    _algorithm.OpenSet.Add(currentNode);
+                }
+                else if (currentNode.GCost > GCost + 1)
+                {
+                    if (!_adjacentNodes.Contains(currentNode))
+                    {
+                        _adjacentNodes.Add(currentNode);
+                    }
+                    currentNode.GCost = GCost + 1;
+                    currentNode.Parent = this;
+                }
+            }
+        }
 
-        private T _value;
+        #endregion Private Methods
 
-        private List<Node<T>> _children = new List<Node<T>>();
+        private Boolean _isPathFinding = true;
+        private Int32 _hCost = int.MinValue;
+        private Int32 _gCost = 0;
+        private ASNode _parent;
+        private MapTile _currentTile;
+
+        private List<ASNode> _adjacentNodes = new List<ASNode>();
+
+        private PathingAlgorithm _algorithm;
     }
 }

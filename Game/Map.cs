@@ -68,16 +68,22 @@ namespace Game
         public override void Draw(Graphics g)
         {
             drawMutex.WaitOne();
-            for (int i = 0; i < MapSize; i++)
+            lock (GlobalLighting.Instance.Matrix)
             {
-                for (int j = 0; j < MapSize; j++)
+                for (int i = 0; i < MapSize; i++)
                 {
-                    Tiles[i][j].Draw(g);
-                    if (ShowCollisions)
+                    for (int j = 0; j < MapSize; j++)
                     {
-                        if (Tiles[i][j].Collide)
+                        if (Tiles[i][j].IsTileVisible())
                         {
-                            g.DrawRectangle(Pens.Purple, new Rectangle(Tiles[i][j].Location, new Size(TileSize, TileSize)));
+                            Tiles[i][j].Draw(g);
+                        }
+                        if (ShowCollisions)
+                        {
+                            if (Tiles[i][j].Collide)
+                            {
+                                g.DrawRectangle(Pens.Purple, new Rectangle(Tiles[i][j].Location, new Size(TileSize, TileSize)));
+                            }
                         }
                     }
                 }
@@ -88,7 +94,13 @@ namespace Game
 
         public MapTile GetClickedTile(Int32 x, Int32 y)
         {
-            return Tiles[findClickedRowIndex(y)][findClickedColIndex(x)];
+            var yIndex = findClickedRowIndex(y);
+            var xIndex = findClickedColIndex(x);
+            xIndex = xIndex < 0 ? 0 : xIndex;
+            xIndex = xIndex >= Tiles.Count ? Tiles.Count - 1 : xIndex;
+            yIndex = yIndex < 0 ? 0 : yIndex;
+            yIndex = yIndex >= Tiles.Count ? Tiles.Count - 1 : yIndex;
+            return Tiles[yIndex][xIndex];
         }
 
         public MapTile GetMiddleTile()
@@ -113,36 +125,32 @@ namespace Game
 
         public List<Int32> GetPath(MapTile fromTile, MapTile toTile)
         {
-            PathingAlgorithm algorithm = new PathingAlgorithm(this);
-            return algorithm.GetMovementDirections(fromTile, toTile);
+            PathingAlgorithm algorithm = new PathingAlgorithm();
+            return algorithm.getBestPathAStar(fromTile, toTile);
         }
 
         #region PRIVATE
 
-        private Int32 findClickedRowIndex(Int32 y)
+        public Int32 findClickedRowIndex(Int32 y)
         {
-            for(int i = 0; i < MapSize; i++)
-            {
-                if (Tiles[i][0].Location.Y > y)
-                {
-                    return --i;
-                }
-            }
-
-            return MapSize - 1;
+            Int32 clickedRow = ((y - getOffsetY()) / TileSize);
+            return clickedRow;
         }
 
-        private Int32 findClickedColIndex(Int32 x)
+        public Int32 findClickedColIndex(Int32 x)
         {
-            for (int i = 0; i < MapSize; i++)
-            {
-                if (Tiles[0][i].Location.X > x)
-                {
-                    return --i;
-                }
-            }
+            Int32 clickedRow = ((x - getOffsetX()) / TileSize);
+            return clickedRow;
+        }
 
-            return MapSize - 1;
+        private Int32 getOffsetX()
+        {
+            return _tiles[0][0].Location.X;
+        }
+
+        private Int32 getOffsetY()
+        {
+            return _tiles[0][0].Location.Y;
         }
 
         private Int32 getXSpeed()
@@ -257,7 +265,7 @@ namespace Game
         System.Threading.Mutex drawMutex;
         List<List<MapTile>> _tiles = new List<List<MapTile>>();
         Int32 _mapSize = 128;
-        Int32 _tileSize = 32;
+        Int32 _tileSize = Screen.TileSize;
 
         Int32 xMoveLeft = 0;
         Int32 yMoveLeft = 0;

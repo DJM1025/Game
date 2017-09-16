@@ -16,7 +16,7 @@ namespace AnimationMaker
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new AnimationMaker(Game.Screen._tileSize));
+            Application.Run(new AnimationMaker(Game.Screen.TileSize));
         }
     }
 }

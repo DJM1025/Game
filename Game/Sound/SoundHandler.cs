@@ -35,6 +35,10 @@ namespace Game.Sound
             {
                 volume = 0;
             }
+            if (volume < -10000)
+            {
+                volume = -10000;
+            }
             _soundFiles[soundId].SetVolume(volume);
         }
 

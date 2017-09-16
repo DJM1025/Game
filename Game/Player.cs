@@ -148,11 +148,11 @@ namespace Game
 
         private MapTile _currentTile;
         private Dictionary<WalkingDirection, Animation> _animations = new Dictionary<WalkingDirection, Animation>();
-        private Int32 _size = 64;
+        private Int32 _size = Screen.TileSize;
         private Int32 _speed = 6;
 
-        protected const string animPath = @"C:\Users\DJMar_000\Desktop\Game\Game\Game\Animations\";
-        protected const string soundPath = @"C:\Users\DJMar_000\Desktop\Game\Game\Game\Sounds\";
+        protected readonly string animPath = Scripting.BaseScript.animPath;
+        protected readonly string soundPath = Scripting.BaseScript.soundPath;
 
         protected virtual void OnPlayerMoved()
         {

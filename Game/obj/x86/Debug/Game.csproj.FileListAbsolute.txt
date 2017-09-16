@@ -27,3 +27,5 @@ C:\Users\Dan\Desktop\GameGit\Game\Game\bin\Debug\Microsoft.DirectX.Direct3D.dll
 C:\Users\Dan\Desktop\GameGit\Game\Game\bin\Debug\Microsoft.DirectX.dll
 C:\Users\Dan\Desktop\GameGit\Game\Game\bin\Debug\Game.exe.config
 C:\Users\DJMar_000\Desktop\Game\Game\Game\bin\Debug\Game.exe.config
+C:\Users\Dan\Desktop\GameGit\Game\Game\obj\x86\Debug\Game.DevTools.ScriptHelper.ScriptHelper.resources
+C:\Users\Dan\Desktop\GameGit\Game\Game\obj\x86\Debug\Game.csproj.CoreCompileInputs.cache
